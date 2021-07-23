@@ -1,0 +1,30 @@
+{
+  "language": "Solidity",
+  "sources": {
+    "contracts/CollateralLockerFactory.sol": {
+      "urls": ["contracts/CollateralLockerFactory.sol"]
+    },
+    "contracts/test/CollateralLockerFactory.t.sol": {
+      "urls": ["contracts/test/CollateralLockerFactory.t.sol"]
+    }
+  },
+  "settings": {
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "outputSelection": {
+      "*": {
+        "*": [
+          "abi",
+          "evm.bytecode",
+          "evm.deployedBytecode"
+        ],
+        "": ["ast"]
+      }
+    },
+    "metadata": {
+      "bytecodeHash": "none"
+    }
+  }
+}
