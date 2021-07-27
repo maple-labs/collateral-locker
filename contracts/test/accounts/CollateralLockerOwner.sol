@@ -1,14 +1,13 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 pragma solidity 0.6.11;
 
-import { ICollateralLocker } from "../../interfaces/ICollateralLocker.sol";
-
-import { CollateralLockerFactory } from "../../CollateralLockerFactory.sol";
+import { ICollateralLocker }        from "../../interfaces/ICollateralLocker.sol";
+import { ICollateralLockerFactory } from "../../interfaces/ICollateralLockerFactory.sol";
 
 contract CollateralLockerOwner {
 
     function collateralLockerFactory_newLocker(address factory, address token) external returns (address) {
-        return CollateralLockerFactory(factory).newLocker(token);
+        return ICollateralLockerFactory(factory).newLocker(token);
     }
 
     function try_collateralLockerFactory_newLocker(address factory, address token) external returns (bool ok) {
