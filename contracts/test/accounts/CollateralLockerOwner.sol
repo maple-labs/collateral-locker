@@ -8,7 +8,7 @@ import { CollateralLockerFactory } from "../../CollateralLockerFactory.sol";
 contract CollateralLockerOwner {
 
     function collateralLockerFactory_newLocker(address factory, address token) external returns (address) {
-        return address(ICollateralLocker(CollateralLockerFactory(factory).newLocker(token)));
+        return CollateralLockerFactory(factory).newLocker(token);
     }
 
     function try_collateralLockerFactory_newLocker(address factory, address token) external returns (bool ok) {
