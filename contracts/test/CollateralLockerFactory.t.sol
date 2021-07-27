@@ -10,7 +10,7 @@ import { CollateralLockerFactory } from "../CollateralLockerFactory.sol";
 
 import { CollateralLockerOwner } from "./accounts/CollateralLockerOwner.sol";
 
-contract MintableToken is ERC20 {
+contract MockToken is ERC20 {
 
     constructor (string memory name, string memory symbol) ERC20(name, symbol) public {}
 
@@ -24,7 +24,7 @@ contract CollateralLockerFactoryTest is DSTest {
 
     function test_newLocker() external {
         CollateralLockerFactory factory  = new CollateralLockerFactory();
-        MintableToken           token    = new MintableToken("TKN", "TKN");
+        MockToken               token    = new MockToken("TKN", "TKN");
         CollateralLockerOwner   owner    = new CollateralLockerOwner();
         CollateralLockerOwner   nonOwner = new CollateralLockerOwner();
 
