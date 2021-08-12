@@ -1,0 +1,11 @@
+name: collateral-locker
+version: 1.0.0
+source: contracts
+packages:
+  - path: contracts/CollateralLockerFactory.sol
+    contractName: CollateralLockerFactory
+    customChecksum: 0x8ee93ba6cd552f6f53191c09d2b010a1a3213b9078f782fb83fc4190e0e35081
+  - path: contracts/CollateralLocker.sol
+    contractName: CollateralLocker
+    customChecksum: 0x65d8c97b0abdae05469f5ee9df017111eae61cc7468320d126f8da44ebe2c94d
+customDescription: Collateral Locker Artifacts and ABIs

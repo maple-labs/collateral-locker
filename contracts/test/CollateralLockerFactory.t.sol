@@ -1,34 +1,47 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 pragma solidity 0.6.11;
-pragma experimental ABIEncoderV2;
 
-import { TestUtil } from "../../../../test/TestUtil.sol";
+import { DSTest } from "../../modules/ds-test/src/test.sol";
+import { ERC20 }  from "../../modules/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol";
 
 import { ICollateralLocker } from "../interfaces/ICollateralLocker.sol";
 
-contract CollateralLockerFactoryTest is TestUtil {
+import { CollateralLockerFactory } from "../CollateralLockerFactory.sol";
 
-    function setUp() public {
-        setUpGlobals();
-        setUpTokens();
-        createCollateralLockerFactory();
-        createBorrower();
+import { CollateralLockerOwner } from "./accounts/CollateralLockerOwner.sol";
+
+contract MockToken is ERC20 {
+
+    constructor (string memory name, string memory symbol) ERC20(name, symbol) public {}
+
+    function mint(address account, uint256 amount) external {
+        _mint(account, amount);
     }
 
-    function test_newLocker() public {
-        ICollateralLocker cl  = ICollateralLocker(clFactory.newLocker(USDC));
+}
 
-        // Validate the storage of clfactory.
-        assertEq(clFactory.owner(address(cl)), address(this), "Invalid owner");
-        assertTrue(clFactory.isLocker(address(cl)));
+contract CollateralLockerFactoryTest is DSTest {
 
-        // Validate the storage of cl.
-        assertEq(cl.loan(), address(this),            "Incorrect loan address");
-        assertEq(address(cl.collateralAsset()), USDC, "Incorrect address of collateral asset");
+    function test_newLocker() external {
+        CollateralLockerFactory factory  = new CollateralLockerFactory();
+        MockToken               token    = new MockToken("TKN", "TKN");
+        CollateralLockerOwner   owner    = new CollateralLockerOwner();
+        CollateralLockerOwner   nonOwner = new CollateralLockerOwner();
 
-        // Assert that no one can access CollateralLocker funds
-        mint("USDC", address(cl),  500 * USD);
-        assertTrue(!bob.try_pull(address(cl), address(bob), 10));
+        ICollateralLocker locker = ICollateralLocker(owner.collateralLockerFactory_newLocker(address(factory), address(token)));
+
+        // Validate the storage of factory.
+        assertEq(factory.owner(address(locker)), address(owner), "Invalid owner");
+        assertTrue(factory.isLocker(address(locker)),            "Invalid isLocker");
+
+        // Validate the storage of locker.
+        assertEq(locker.loan(),                     address(owner), "Incorrect loan address");
+        assertEq(address(locker.collateralAsset()), address(token), "Incorrect address of collateral asset");
+
+        // Assert that only the CollateralLocker owner can access funds
+        token.mint(address(locker), 1);
+        assertTrue(!nonOwner.try_collateralLocker_pull(address(locker), address(owner), 1), "Pull succeeded from nonOwner");
+        assertTrue(    owner.try_collateralLocker_pull(address(locker), address(owner), 1), "Pull failed from owner");
     }
 
 }
