@@ -10,11 +10,11 @@ contract CollateralLocker is ICollateralLocker {
 
     using SafeERC20 for IERC20;
 
-    IERC20  public override immutable collateralAsset;
+    address public override immutable collateralAsset;
     address public override immutable loan;
 
     constructor(address _collateralAsset, address _loan) public {
-        collateralAsset = IERC20(_collateralAsset);
+        collateralAsset = _collateralAsset;
         loan            = _loan;
     }
 
@@ -27,7 +27,7 @@ contract CollateralLocker is ICollateralLocker {
     }
 
     function pull(address dst, uint256 amt) external override isLoan {
-        collateralAsset.safeTransfer(dst, amt);
+        IERC20(collateralAsset).safeTransfer(dst, amt);
     }
 
 }
